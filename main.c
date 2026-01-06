@@ -26,6 +26,13 @@ int main(void) {
             key = cgetc();
             
             switch (key) {
+                case 13: // Enter key
+                    if (state.fire_level == 0) {
+                        action_light_fire();
+                    } else {
+                        action_stoke_fire();
+                    }
+                    break;
                 case 'a':
                 case 'A':
                     action_light_fire();
@@ -36,7 +43,9 @@ int main(void) {
                     break;
                 case 'g':
                 case 'G':
-                    action_gather_wood();
+                    if (state.fire_lit_once) {
+                        action_gather_wood();
+                    }
                     break;
                 case 'q': // Quit for testing
                     return 0;

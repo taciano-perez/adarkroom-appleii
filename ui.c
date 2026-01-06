@@ -36,7 +36,8 @@ void ui_draw(void) {
     
     // 1. Status Area (Top)
     gotoxy(0, 0);
-    cprintf("A Dark Room - Apple II Port");
+    // Pad to clear line
+    cprintf("%-40s", state.room_name);
     
     gotoxy(0, 2);
     // Clearing line logic manually or just overwrite with spaces if needed
@@ -57,8 +58,14 @@ void ui_draw(void) {
     
     // 3. Actions / Menu (Bottom)
     gotoxy(0, 13);
-    if (state.fire_level == 0 && state.wood >= LIGHT_COST) {
-        cprintf("[A] Light Fire (5 wood)   ");
+    if (state.fire_level == 0) {
+        if (!state.fire_lit_once) {
+            cprintf("[A] Light Fire            ");
+        } else if (state.wood >= LIGHT_COST) {
+            cprintf("[A] Light Fire (5 wood)   ");
+        } else {
+             cprintf("                          ");
+        }
     } else if (state.fire_level > 0) {
         cprintf("[S] Stoke Fire (1 wood)   ");
     } else {
@@ -66,7 +73,11 @@ void ui_draw(void) {
     }
     
     gotoxy(0, 15);
-    cprintf("[G] Gather Wood           ");
+    if (state.fire_lit_once) {
+        cprintf("[G] Gather Wood           ");
+    } else {
+        cprintf("                          ");
+    }
     
     gotoxy(0, 23);
     cprintf("Ready.");

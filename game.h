@@ -36,6 +36,7 @@ typedef struct {
     char log_buffer[MAX_LOG_LINES][LOG_LINE_LEN + 1];
     uint8_t log_head; // Index of the newest message
     char status_msg[40];
+    char room_name[40];
 
 } GameState;
 

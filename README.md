@@ -1,6 +1,6 @@
 # A Dark Room - Apple II Port
 
-This project is a port of the browser-based text adventure game "A Dark Room" to the Apple II platform, written in C using the **cc65** cross-compiler.
+This project is a port of the browser-based text adventure game [A Dark Room](https://github.com/doublespeakgames/adarkroom) to the Apple II platform, written in C using the **cc65** cross-compiler.
 
 ## Design & Architecture
 

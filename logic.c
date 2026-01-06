@@ -24,10 +24,11 @@ void game_init(void) {
     memset(state.log_buffer, 0, sizeof(state.log_buffer));
     state.log_head = 0;
     
-    // Just for testing, give some starter wood if needed, 
-    // but original game starts with nothing and a button to "light fire" appears when you have wood? 
-    // Actually in original, you stumble in. We'll simulate 'gather' to bootstrap.
-    state.wood = 10; 
+    // Set initial room name
+    strcpy(state.room_name, "A Dark Room");
+    
+    // Initial state: No wood, fire dead
+    state.wood = 0; 
 }
 
 void game_tick(void) {
@@ -44,6 +45,7 @@ void game_tick(void) {
             
             if (state.fire_level == 0) {
                 ui_log("the room is freezing.");
+                strcpy(state.room_name, "A Dark Room");
             }
         }
     }
@@ -55,17 +57,29 @@ void action_light_fire(void) {
         return;
     }
     
+    // First light is free and special
+    if (!state.fire_lit_once) {
+        state.fire_lit_once = true;
+        state.fire_level = 3; // Burning
+        state.fire_timer = 0;
+        
+        ui_log("the fire is burning");
+        ui_log("the light spills from the windows, out into the dark");
+        strcpy(state.room_name, "A Firelit Room");
+        return;
+    }
+    
     if (state.wood < LIGHT_COST) {
         ui_log("not enough wood.");
         return;
     }
     
     state.wood -= LIGHT_COST;
-    state.fire_level = 1; // Start smoldering or burning? JS says Burning (3) on light, but let's be gradual or stick to source.
-    // script/room.js: $SM.set('game.fire', Room.FireEnum.Burning); -> Burning is 3.
+    // ... rest of normal light logic if needed, but usually only light once from dead?
+    // If fire dies, can we light it again? Yes.
     state.fire_level = 3; 
     state.fire_timer = 0;
-    state.fire_lit_once = true;
+    strcpy(state.room_name, "A Firelit Room");
     
     ui_log("fire burning. room is warm.");
 }
