@@ -23,29 +23,30 @@ int main(void) {
     while (1) {
         // 1. Input Handling (Non-blocking)
         if (kbhit()) {
+            GameAction actions[MAX_ACTIONS];
+            int count;
+
             key = cgetc();
+            count = get_available_actions(actions, MAX_ACTIONS);
             
+            // Ensure index is valid before moving
+            if (state.active_button_idx >= count) state.active_button_idx = 0;
+
             switch (key) {
-                case 13: // Enter key
-                    if (state.fire_level == 0) {
-                        action_light_fire();
-                    } else {
-                        action_stoke_fire();
+                case 13: // Enter
+                    if (count > 0) {
+                        perform_action(actions[state.active_button_idx].type);
                     }
                     break;
-                case 'a':
-                case 'A':
-                    action_light_fire();
+                case 8:  // Left
+                case 11: // Up
+                    state.active_button_idx--;
+                    if (state.active_button_idx < 0) state.active_button_idx = count - 1;
                     break;
-                case 's':
-                case 'S':
-                    action_stoke_fire();
-                    break;
-                case 'g':
-                case 'G':
-                    if (state.fire_lit_once) {
-                        action_gather_wood();
-                    }
+                case 21: // Right
+                case 10: // Down
+                    state.active_button_idx++;
+                    if (state.active_button_idx >= count) state.active_button_idx = 0;
                     break;
                 case 'q': // Quit for testing
                     return 0;

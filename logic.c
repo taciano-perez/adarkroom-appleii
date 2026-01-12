@@ -23,6 +23,7 @@ void game_init(void) {
     // Clear log buffer
     memset(state.log_buffer, 0, sizeof(state.log_buffer));
     state.log_head = 0;
+    state.active_button_idx = 0;
     
     // Set initial room name
     strcpy(state.room_name, "A Dark Room");
@@ -112,4 +113,48 @@ void action_gather_wood(void) {
     // Placeholder for "Outside" or initial gathering
     state.wood += 5;
     ui_log("gathered wood.");
+}
+
+int get_available_actions(GameAction* actions, int max_actions) {
+    int count = 0;
+    
+    if (count >= max_actions) return count;
+
+    if (state.fire_level == 0) {
+        if (!state.fire_lit_once || state.wood >= LIGHT_COST) {
+            actions[count].label = "LIGHT FIRE";
+            actions[count].type = ACTION_LIGHT_FIRE;
+            count++;
+        }
+    } else {
+        actions[count].label = "STOKE FIRE";
+        actions[count].type = ACTION_STOKE_FIRE;
+        count++;
+    }
+
+    if (count >= max_actions) return count;
+
+    if (state.fire_lit_once) {
+        actions[count].label = "GATHER WOOD";
+        actions[count].type = ACTION_GATHER_WOOD;
+        count++;
+    }
+
+    return count;
+}
+
+void perform_action(ActionType type) {
+    switch (type) {
+        case ACTION_LIGHT_FIRE:
+            action_light_fire();
+            break;
+        case ACTION_STOKE_FIRE:
+            action_stoke_fire();
+            break;
+        case ACTION_GATHER_WOOD:
+            action_gather_wood();
+            break;
+        default:
+            break;
+    }
 }

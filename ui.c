@@ -95,7 +95,7 @@ void ui_draw_box(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
 void draw_separator(void) {
     uint8_t i;
     for (i = 0; i < SCREEN_H; ++i) {
-        gotoxy(LOG_LINE_LEN, i);
+        gotoxy(UI_SEPARATOR_X, i);
         cputc('|');
     }
 }
@@ -110,31 +110,34 @@ void ui_draw(void) {
     for (i = 0; i < MAX_LOG_LINES; i++) {
         gotoxy(0, i);
         // Limit print width to avoid overrunning separator
-        cprintf("%-14s", state.log_buffer[i]); 
+        cprintf("%-*s", UI_SEPARATOR_X, state.log_buffer[i]); 
     }
     
     // --- Column 2: Buttons ---
     // Clear the button area first (spaces)
     // Area: 15 to 29 (approx)
     for(i = 0; i < 20; i++) {
-        gotoxy(15, i);
-        cprintf("              "); // 14 spaces
+        gotoxy(UI_MIDDLE_X, i);
+        cprintf("%*s", UI_SEPARATOR_X, ""); // Clear width matches left column
     }
 
-    gotoxy(15, 3);
-    if (state.fire_level == 0) {
-        if (!state.fire_lit_once) {
-            cprintf("[A] light fire");
-        } else if (state.wood >= LIGHT_COST) {
-            cprintf("[A] light fire");
+    {
+        GameAction actions[MAX_ACTIONS];
+        int count = get_available_actions(actions, MAX_ACTIONS);
+        int row = 3;
+        int j; // Loop var
+
+        // Draw buttons
+        for (j = 0; j < count; ++j) {
+            gotoxy(UI_MIDDLE_X, row + j);
+            if (j == state.active_button_idx) {
+                revers(1);
+            }
+            cprintf("[%s]", actions[j].label);
+            if (j == state.active_button_idx) {
+                revers(0);
+            }
         }
-    } else if (state.fire_level > 0) {
-        cprintf("[S] stoke fire");
-    }
-    
-    gotoxy(15, 4);
-    if (state.fire_lit_once) {
-        cprintf("[G] gather wood");
     }
 
     // --- Column 3: Store (Boxed) ---
@@ -161,7 +164,7 @@ void ui_draw(void) {
     }
     
     // Status / Room Name
-    gotoxy(15, 1);
+    gotoxy(UI_MIDDLE_X, 1);
     cprintf("%s", state.room_name);
 
 }

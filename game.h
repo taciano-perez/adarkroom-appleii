@@ -8,17 +8,34 @@
 #define SCREEN_W 40
 #define SCREEN_H 24
 
+// UI Layout
+#define UI_SEPARATOR_X 12
+#define UI_MIDDLE_X 13  // UI_SEPARATOR_X + 1
+
 // Logging
 #define MAX_LOG_LINES 20
-#define LOG_LINE_LEN 14
+#define LOG_LINE_LEN UI_SEPARATOR_X
 
 // Game Constants (Scaled down for integer math/loop cycles)
 #define FIRE_MAX_LEVEL 4
 #define FIRE_COOL_TICKS 300 // Approx cycles before fire dies down
 #define STOKE_COST 1
 #define LIGHT_COST 5
+#define MAX_ACTIONS 10
 
 // State Structure
+typedef enum {
+    ACTION_LIGHT_FIRE,
+    ACTION_STOKE_FIRE,
+    ACTION_GATHER_WOOD,
+    ACTION_NONE
+} ActionType;
+
+typedef struct {
+    const char* label;
+    ActionType type;
+} GameAction;
+
 typedef struct {
     uint16_t wood;
     uint16_t fur;
@@ -35,6 +52,7 @@ typedef struct {
     // UI State
     char log_buffer[MAX_LOG_LINES][LOG_LINE_LEN + 1];
     uint8_t log_head; // Index of the newest message
+    int8_t active_button_idx; // Index of the currently highlighted button
     char status_msg[40];
     char room_name[40];
 
@@ -48,6 +66,9 @@ void game_tick(void);
 void action_light_fire(void);
 void action_stoke_fire(void);
 void action_gather_wood(void); // Simple debug/initial action to get wood
+
+int get_available_actions(GameAction* actions, int max_actions);
+void perform_action(ActionType type);
 
 // --- UI (ui.c) ---
 void ui_init(void);

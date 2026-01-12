@@ -69,7 +69,7 @@ The output file `adarkroom` is a raw binary executable. The standard Apple II DO
 2.  Get a blank DOS 3.3 disk image (search for `blank_dos33.dsk`).
 3.  Add the binary to the disk:
     ```bash
-    java -jar ac.jar -p blank_dos33.dsk adarkroom B 0x803 < adarkroom
+    java -jar ac.jar -d blank_dos33.dsk adarkroom; Java -jar ac.jar -p blank_dos33.dsk adarkroom B 0x803 < adarkroom
     ```
     *(Note: 0x803 is the default start address for cc65 programs).*
 4.  Load `blank_dos33.dsk` in your emulator.
