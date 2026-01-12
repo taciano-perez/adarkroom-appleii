@@ -9,8 +9,8 @@
 #define SCREEN_H 24
 
 // Logging
-#define MAX_LOG_LINES 4
-#define LOG_LINE_LEN 38
+#define MAX_LOG_LINES 20
+#define LOG_LINE_LEN 14
 
 // Game Constants (Scaled down for integer math/loop cycles)
 #define FIRE_MAX_LEVEL 4
@@ -52,6 +52,7 @@ void action_gather_wood(void); // Simple debug/initial action to get wood
 // --- UI (ui.c) ---
 void ui_init(void);
 void ui_draw(void);
+void ui_draw_box(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 void ui_log(const char* msg);
 void ui_set_status(const char* msg);
 
